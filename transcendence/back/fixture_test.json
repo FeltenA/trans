@@ -16,5 +16,37 @@
       "name": "Paul",
       "password": "McCartney"
     }
+  },
+  {
+    "model": "back.score",
+    "pk": 1,
+    "fields": {
+      "player": "pseudo1",
+      "score": 3,
+      "match": 1
+    }
+  },
+  {
+    "model": "back.score",
+    "pk": 2,
+    "fields": {
+      "player": "pseudo2",
+      "score": 1,
+      "match": 1
+    }
+  },
+  {
+    "model": "back.match",
+    "pk": 1,
+    "fields": {
+      "winner": "pseudo1"
+    }
+  },
+  {
+    "model": "back.match",
+    "pk": 2,
+    "fields": {
+      "winner": "pseudo2"
+    }
   }
 ]

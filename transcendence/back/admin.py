@@ -3,4 +3,4 @@ from .models import User
 
 @admin.register(User)
 class AllUsersAdmin(admin.ModelAdmin):
-    list_display = ("name", "password")
+    list_display = ("nickname", "name", "password")
