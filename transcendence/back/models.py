@@ -8,6 +8,7 @@ class User(models.Model):
     #updated_at = models.DateTimeField(auto_now=True)
 
 class Match(models.Model):
+    player_nbr = models.IntegerField(default=2)
     winner = models.ForeignKey(
         "User",
         on_delete=models.CASCADE,
@@ -36,5 +37,9 @@ class Score(models.Model):
 class Tournament(models.Model):
     name = models.CharField(max_length=30)
     players = models.ManyToManyField(User)
+    winner = models.ForeignKey(
+        "User",
+        on_delete=models.CASCADE,
+    )
     #created_at = models.DateTimeField(auto_now_add=True)
     #updated_at = models.DateTimeField(auto_now=True)
