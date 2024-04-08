@@ -1,3 +1,6 @@
 from django.test import TestCase
+from django.contrib.auth.models import User
 
-# Create your tests here.
+user = User.objects.create_user(username='john',
+                                 email='jlennon@beatles.com',
+                                 password='glass onion')

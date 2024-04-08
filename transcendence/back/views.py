@@ -3,8 +3,20 @@ from django.http import HttpResponse
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
-from .models import User, Match, Score
-from .serializers import UserSerializer, MatchSerializer, ScoreSerializer
+from django.contrib.auth.models import User
+from .models import Match, Score, Tournament
+from .serializers import UserSerializer, MatchSerializer, ScoreSerializer, TournamentSerializer
+from django.contrib.auth import login, authenticate
+from django.shortcuts import render, redirect
+from .forms import CustomUserCreationForm
+
+@api_view(['POST'])
+def signup(request):
+    form = CustomUserCreationForm(request.POST)
+    if form.is_valid():
+        user = form.save()
+        return Response(form.data, status=status.HTTP_201_CREATED)
+    return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET', 'POST'])
@@ -23,7 +35,11 @@ def user_list(request):
 @api_view(['GET', 'PUT', 'DELETE'])
 def user_detail(request, pk):
     try:
-        user = User.objects.get(pk=pk)
+        user = 0
+        if (pk.isnumeric()):
+            user = User.objects.get(pk=pk)
+        if (not user):
+            user = User.objects.get(username=pk)
     except User.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
@@ -31,6 +47,10 @@ def user_detail(request, pk):
         return Response(serializer.data)
     elif request.method == 'PUT':
         serializer = UserSerializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET', 'POST'])
@@ -81,4 +101,11 @@ def tournament_detail(request, pk):
         serializer = TournamentSerializer(tournament)
         return Response(serializer.data)
     elif request.method == 'PUT':
+        if (not request.data.get('players')):
+            players = tournament.players.values_list('nickname', flat=True)
+            request.data['players'] = players
         serializer = TournamentSerializer(tournament, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

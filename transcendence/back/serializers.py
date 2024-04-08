@@ -1,21 +1,20 @@
 from rest_framework import serializers
-from .models import User, Score, Match, Tournament
+from .models import Score, Match, Tournament
+from django.contrib.auth.models import User
 
 class UserSerializer(serializers.ModelSerializer):
-    nickname = serializers.CharField(max_length=30)
-    name = serializers.CharField(max_length=30)
-    password = serializers.CharField(max_length=30)
 
     class Meta:
         model = User
-        fields = ['nickname', 'name', 'password']
+        fields = ['id', 'username', 'first_name', 'last_name', 'email']
 
 class ScoreSerializer(serializers.ModelSerializer):
     score = serializers.IntegerField()
-    player = serializers.PrimaryKeyRelatedField(
+    player = serializers.SlugRelatedField(
         many=False, 
         read_only=False,
-        queryset=User.objects.all()
+        queryset=User.objects.all(),
+        slug_field='username'
     )
 
     class Meta:
@@ -25,10 +24,11 @@ class ScoreSerializer(serializers.ModelSerializer):
 class MatchSerializer(serializers.ModelSerializer):
     scores = ScoreSerializer(many=True)
     player_nbr = serializers.IntegerField(default=2, required=False)
-    winner = serializers.PrimaryKeyRelatedField(
+    winner = serializers.SlugRelatedField(
         many=False, 
         read_only=False,
-        queryset=User.objects.all()
+        queryset=User.objects.all(),
+        slug_field='username'
     )
     tournament = serializers.PrimaryKeyRelatedField(
         many=False, 
@@ -45,13 +45,13 @@ class MatchSerializer(serializers.ModelSerializer):
     def validate_player_nbr(self, data):
         if (data < 2):
             raise serializers.ValidationError({"player_nbr": "player number must be higher than 2"})
-        return (data)
+        return data
     
     def validate(self, data):
         scores = data['scores']
         if (len(scores) != data['player_nbr']):
             raise serializers.ValidationError({"scores": "there must be as much scores as players"})
-        return (data)
+        return data
     
     def create(self, validated_data):
         scores = validated_data.pop('scores')
@@ -63,12 +63,28 @@ class MatchSerializer(serializers.ModelSerializer):
 
 class TournamentSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=30)
-    players = serializers.PrimaryKeyRelatedField(
-        many=True, 
+    players = serializers.SlugRelatedField(
+        many=False, 
         read_only=False,
-        queryset=User.objects.all()
+        queryset=User.objects.all(),
+        slug_field='username'
+    )
+    winner = serializers.SlugRelatedField(
+        many=False, 
+        read_only=False,
+        queryset=User.objects.all(),
+        slug_field='username',
+        allow_null=True,
+        required=False
     )
 
     class Meta:
         model = Tournament
-        fields = ['name', 'players']
+        fields = ['name', 'winner','players']
+
+    def validate(self, data):
+        players = data.get('players')
+        winner = data.get('winner')
+        if (players and winner and winner not in players):
+            raise serializers.ValidationError({"winner": "winner needs to be one of the players"})
+        return data
