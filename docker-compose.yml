@@ -1,17 +1,17 @@
 version: '3.9'
 
 services:
-  front:
-    container_name: front
-    depends_on:
-      - back
-    networks:
-      - transcendence
-    env_file: .env
-    build: front
-    restart: on-failure
-    ports:
-      - "8080:8080"
+#  front:
+#    container_name: front
+#    depends_on:
+#      - back
+#    networks:
+#      - transcendence
+#    env_file: .env
+#    build: front
+#    restart: on-failure
+#    ports:
+#      - "8080:8080"
 
   back:
     container_name: back

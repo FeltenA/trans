@@ -1,14 +1,12 @@
 FROM python:3.10.13
 
-RUN apt update -y && apt upgrade
+RUN apt update -y && apt upgrade -y
 
-WORKDIR .
+COPY ./tools/requirements.txt /
+COPY --chmod=777 ./tools/script.sh /
+COPY ./files/transcendence /transcendence
 
-COPY ./tools/requirements .
-COPY ./files/transcendence .
-
-RUN pip install -r requirements.txt \
-    && python transcendence/manage.py migrate \
+RUN pip install -r /requirements.txt \
     && pip install Django \
     && pip install -U djangorestframework \
     && pip install djangorestframework_simplejwt \
