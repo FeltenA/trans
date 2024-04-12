@@ -10,6 +10,12 @@ from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
 from .forms import CustomUserCreationForm
 
+def index(request):
+    return render(request, "index.html")
+
+def test(request):
+    return render(request, "test.html")
+
 @api_view(['POST'])
 def signup(request):
     form = CustomUserCreationForm(request.POST)

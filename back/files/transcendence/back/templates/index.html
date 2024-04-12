@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Single Page</title>
+    </head>
+    <body>
+        <h1>Hello</h1>
+        <button id="btn-1" data-section="1" value="test.js">Section 1</button>
+        <button data-section="2">Section 2</button>
+        <button data-section="3">Section 3</button>
+
+        <!-- Contents loaded from server is inserted here by javascript -->
+        <div id="content">
+
+        </div>
+    
+    </body>
+    {% load static %}
+    <script id="script_js" src="{% static 'index.js' %}" defer></script>
+</html>
