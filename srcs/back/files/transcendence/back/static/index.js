@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", function() {
     document.getElementById('match_link').addEventListener("click", function(){
         fetch('/jeu/')
@@ -7,10 +8,7 @@ document.addEventListener("DOMContentLoaded", function() {
             document.querySelector('#content').innerHTML = text;
         });
         fetchScript("jeu.js");
-    })
-});
-
-document.addEventListener("DOMContentLoaded", function() {
+    });
     document.getElementById('ai_link').addEventListener("click", function(){
         fetch('/ordinateur/')
         .then(response => response.text())
@@ -19,10 +17,7 @@ document.addEventListener("DOMContentLoaded", function() {
             document.querySelector('#content').innerHTML = text;
         });
         fetchScript("ordinateur.js");
-    })
-});
-
-document.addEventListener("DOMContentLoaded", function() {
+    });
     document.getElementById('tournament_link').addEventListener("click", function(){
         fetch('/tournoi/')
         .then(response => response.text())
@@ -31,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function() {
             document.querySelector('#content').innerHTML = text;
         });
         fetchScript("tournoi.js");
-    })
+    });
 });
 
 function fetchScript(value) {
