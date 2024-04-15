@@ -1,9 +1,13 @@
 all: up
 
 up:
-		@docker compose -f docker-compose.yml up -d --build
+		@docker compose -f srcs/docker-compose.yml up -d --build
 
 down:
-		@docker compose -f docker-compose.yml down
+		@docker compose -f srcs/docker-compose.yml down
 
-.PHONY: all up down
+clean: down
+		@docker volume rm srcs_postgres
+		@docker image rm srcs-back postgres:16.2
+
+.PHONY: all up down clean
